@@ -1,0 +1,40 @@
+name: Deploy React App to GitHub Pages
+
+# → Run this workflow whenever you push to the 'main' branch
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1) Check out your repository code (from main)
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2) Set up Node (we’ll use Node 18 to match CRA)
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # 3) Install dependencies (npm install)
+      - name: Install dependencies
+        run: npm install
+
+      # 4) Build the React app (npm run build → creates /build folder)
+      - name: Build React app
+        run: npm run build
+
+      # 5) Take the /build folder and push it to the gh-pages branch
+      - name: Deploy to gh-pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages           # The branch to push the build output to
+          folder: build              # The folder (in your repo) that contains the static site after building
